@@ -65,7 +65,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::where('id', $id)->first();
+        return $this->responseSuccess($category);
     }
 
     /**
@@ -88,7 +89,29 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $category_check = Category::where('id', '!=', $id)
+            ->where('name', $request->name)
+            ->get()
+            ->toArray();
+
+        if (count($category_check) > 0) {
+            return $this->responseError('Tên loại truyện này đã tồn tại');
+        }
+
+        $request->validate(
+            [ 'name' => 'required' ],
+            [ 'name.required' => 'Tên loại truyện là bắt buộc' ]
+        );
+
+        $category = Category::where('id', $id)
+            ->get()
+            ->first();
+
+        Category::where('id', $id)
+            ->update(['name' => $request->name]);
+
+        return $this->responseSuccess($category, 'Successfully updated');
     }
 
     /**
@@ -99,6 +122,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::where('id', $id);
+        $category->delete();
+        return $this->responseSuccess([], 'Successfully deleted');
     }
 }

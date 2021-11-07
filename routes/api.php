@@ -26,5 +26,5 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
         Route::post('login', [LoginController::class, 'login'])->withoutMiddleware('is-token');
     });
 
-    Route::resource('category', CategoryController::class)->only(['index', 'store']);
+    Route::resource('category', CategoryController::class);
 });
