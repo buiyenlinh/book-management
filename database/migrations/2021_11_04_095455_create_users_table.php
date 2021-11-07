@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('address')->default('');
             $table->string('avatar')->default('');
             $table->foreignId('role_id')->constrained('roles')->unsigned ();
+            $table->string('token');
             $table->timestamps();
         });
     }
