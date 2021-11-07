@@ -23,9 +23,13 @@ class LoginController extends Controller
                 $user = Auth::user();
                 $data['token'] = 'M' . $user->id . Str::random(80);
 
+                User::where('username', $request->username)
+                    ->where('active', 1)
+                    ->update(['token' => $data['token']]);
+
                 return $this->responseSuccess($data, 'Successful login');
             } else {
-                return $this->responseError('Unauthorised', 401);
+                return $this->responseError([], 'Unauthorised', 401);
             }
         } catch (Exception $ex) {
             return $this->responseError([$ex->getMessage()], 'Something was wrong');
