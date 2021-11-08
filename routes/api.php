@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +28,5 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
     });
 
     Route::resource('category', CategoryController::class);
+    Route::resource('book', BookController::class);
 });

@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
         $user->active = 1;
         $user->password = bcrypt('linhlinh@123');
         $user->role_id = 1;
+        $user->token = "";
         $user->save();
     }
 }

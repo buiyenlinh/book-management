@@ -20,8 +20,9 @@ class CreateBooksTable extends Migration
             $table->string('language');
             $table->integer('page_total');
             $table->string('cover_image');
-            $table->string('production');
+            $table->string('producer');
             $table->string('author');
+            $table->longText('content');
             $table->foreignId('category_id')
                 ->constranted('categories')
                 ->unsigned()
