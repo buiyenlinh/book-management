@@ -89,7 +89,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-
+        
         $category_check = Category::where('id', '!=', $id)
             ->where('name', $request->name)
             ->get()
@@ -104,12 +104,12 @@ class CategoryController extends Controller
             [ 'name.required' => 'Tên loại truyện là bắt buộc' ]
         );
 
+        Category::where('id', $id)
+            ->update(['name' => $request->name]);
+
         $category = Category::where('id', $id)
             ->get()
             ->first();
-
-        Category::where('id', $id)
-            ->update(['name' => $request->name]);
 
         return $this->responseSuccess($category, 'Successfully updated');
     }
