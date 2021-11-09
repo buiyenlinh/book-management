@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Book;
 use App\Models\User;
@@ -44,7 +45,8 @@ class BookController extends Controller
         try {
             $user = User::where('token', $request->bearerToken())->first();
 
-            $cover_image = $request->file('cover_image')->store('public');
+            $cover_image = $request->file('cover_image')->store('public/images');
+            $mp3 = $request->file('mp3')->store('public/mp3');
             $book = Book::create([
                 'title' => $request->title,
                 'describe' => $request->describe,
@@ -52,6 +54,8 @@ class BookController extends Controller
                 'page_total' => $request->page_total,
                 'cover_image' => $cover_image,
                 'producer' => $request->producer,
+                'content' => $request->content,
+                'mp3' => $mp3,
                 'author' => $request->author,
                 'category_id' => $request->category_id,
                 'status' => $request->status,
@@ -100,12 +104,74 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+    }
+
+    public function updateBook(Request $request, $id) {
+
         $book_check = Book::where('id', '!=', $id)
             ->where('title', $request->title)
             ->get()->toArray();
+        
         if (count($book_check) > 0) {
-            return $this->responseError('Tiêu đề này đã tồn tại');
+            return $this->responseError('Tiêu đề này đã tồn tại', '', 200);
         }
+
+        $request->validate([
+                'title' => 'required',
+                'describe' => 'required',
+                'language' => 'required',
+                'page_total' => 'required',
+                'cover_image' => 'required',
+                'producer' => 'required',
+                'author' => 'required',
+                'category_id' => 'required',
+                'status' => 'required'
+            ],
+            [
+                'title.required' => 'Tiêu đề là bắt buộc',
+                'describe.required' => 'Mô tả là bắt buộc',
+                'language.required' => 'Ngôn ngữ là bắt buộc',
+                'page_total.required' => 'Tổng số trang là bắt buộc',
+                'cover_image.required' => 'Ảnh bìa là bắt buộc',
+                'author.required' => 'Tác giả là bắt buộc',
+                'category_id.required' => 'Loại truyện là bắt buộc',
+                'status.required' => 'Trạng thái là bắt buộc'
+            ]
+        );
+
+        $book = Book::where('id', $id)->get()->first();
+        $cover_image = $book->cover_image;
+        $mp3 = $book->mp3;
+        
+        if ($request->file('cover_image')) {
+            Storage::delete($cover_image);
+            $cover_image = $request->file('cover_image')->store('public/images');
+            
+        }
+
+        if ($request->file('mp3')) {
+            Storage::delete($mp3);
+            $mp3 = $request->file('mp3')->store('public/mp3');
+        }
+
+        Book::where('id', $id)
+            ->update([
+                'title' => $request->title,
+                'describe' => $request->describe,
+                'language' => $request->language,
+                'page_total' => $request->page_total,
+                'cover_image' => $cover_image,
+                'producer' => $request->producer,
+                'author' => $request->author,
+                'content' => $request->title,
+                'mp3' => $mp3,
+                'category_id' => $request->category_id,
+                'status' => $request->status,
+            ]);
+
+        $book = Book::where('id', $id)->get()->first();
+        return $this->responseSuccess($book, 'Successfully updated');
     }
 
     /**
@@ -116,6 +182,8 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $book = Book::where('id', $id);
+        $book->delete();
+        return $this->responseSuccess([], 'Successfully deleted');
     }
 }

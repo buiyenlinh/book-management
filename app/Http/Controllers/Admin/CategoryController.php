@@ -96,7 +96,7 @@ class CategoryController extends Controller
             ->toArray();
 
         if (count($category_check) > 0) {
-            return $this->responseError('Tên loại truyện này đã tồn tại');
+            return $this->responseError('Tên loại truyện này đã tồn tại', '', 200);
         }
 
         $request->validate(

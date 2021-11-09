@@ -16,6 +16,8 @@ class Book extends Model
         'cover_image',
         'producer',
         'author',
+        'content',
+        'mp3',
         'category_id',
         'status',
         'username'
