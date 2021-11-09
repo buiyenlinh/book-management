@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Models\Category;
 use App\Http\InitData;
 
 class BookController extends Controller
@@ -44,6 +45,11 @@ class BookController extends Controller
     {
         try {
             $user = User::where('token', $request->bearerToken())->first();
+
+            $category = Category::where('id', $request->category_id)->get()->first();
+            if (!$category) {
+                return $this->responseError('Thể loại truyện này không tồn tại!');
+            }
 
             $cover_image = $request->file('cover_image')->store('public/images');
             $mp3 = $request->file('mp3')->store('public/mp3');
@@ -83,17 +89,7 @@ class BookController extends Controller
             return $this->responseError([$ex->getMessage()], 'Something went wrong');
         }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
@@ -102,10 +98,6 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-
-    }
 
     public function updateBook(Request $request, $id) {
 
