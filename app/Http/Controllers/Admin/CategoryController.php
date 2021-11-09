@@ -44,7 +44,6 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $allRequest = $request->all();
         $user = User::where('token', $request->bearerToken())->first();
         $category = Category::create([
             'name' => $request->name,
