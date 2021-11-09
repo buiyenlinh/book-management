@@ -175,6 +175,14 @@ class BookController extends Controller
     public function destroy($id)
     {
         $book = Book::where('id', $id);
+        if ($book->cover_image) {
+            Storage::delete($book->cover_image);
+        }
+            
+        if ($book->mp3) {
+            Storage::delete($book->mp3);
+        }
+
         $book->delete();
         return $this->responseSuccess([], 'Successfully deleted');
     }
