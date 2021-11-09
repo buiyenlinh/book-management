@@ -29,4 +29,5 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
 
     Route::resource('category', CategoryController::class);
     Route::resource('book', BookController::class);
+    Route::post('book/update/{id}', [BookController::class, 'updateBook']);
 });

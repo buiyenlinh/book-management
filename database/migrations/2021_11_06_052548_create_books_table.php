@@ -23,6 +23,7 @@ class CreateBooksTable extends Migration
             $table->string('producer');
             $table->string('author');
             $table->longText('content');
+            $table->string('mp3')->nullable();
             $table->foreignId('category_id')
                 ->constranted('categories')
                 ->unsigned()
