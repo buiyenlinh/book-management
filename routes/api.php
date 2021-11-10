@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ProfileController;
 
 
 /*
@@ -35,4 +36,8 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
 
     Route::resource('user', UserController::class)->middleware('is-admin');
     Route::post('user/update/{id}', [UserController::class, 'updateUser'])->middleware('is-admin');
+
+    Route::get('profile', [ProfileController::class, 'index']);
+    Route::post('profile/update', [ProfileController::class, 'updateProfile']);
+    Route::delete('profile/avatar/delete', [ProfileController::class, 'deleteAvatar']);
 });
