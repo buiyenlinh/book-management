@@ -52,7 +52,10 @@ class BookController extends Controller
             }
 
             $cover_image = $request->file('cover_image')->store('public/images');
+            $cover_image = Storage::url($cover_image);
             $mp3 = $request->file('mp3')->store('public/mp3');
+            $mp3 = Storage::url($mp3);
+
             $book = Book::create([
                 'title' => $request->title,
                 'describe' => $request->describe,
@@ -139,12 +142,13 @@ class BookController extends Controller
         if ($request->file('cover_image')) {
             Storage::delete($cover_image);
             $cover_image = $request->file('cover_image')->store('public/images');
-            
+            $cover_image = Storage::url($cover_image);
         }
 
         if ($request->file('mp3')) {
             Storage::delete($mp3);
             $mp3 = $request->file('mp3')->store('public/mp3');
+            $mp3 = Storage::url($mp3);
         }
 
         Book::where('id', $id)

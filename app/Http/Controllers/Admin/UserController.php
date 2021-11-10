@@ -47,6 +47,7 @@ class UserController extends Controller
             return $this->responseError(['avatar' => 'Ảnh đại diện là bắt buộc'], '', 422);
         }
         $avatar = $request->file('avatar')->store('public/images');
+        $avatar = Storage::url($avatar);
         if ($request->role_id == 1) {
             return $this->responseError('Người dùng không được chọn quyền này', '', 422);
         }
@@ -126,6 +127,7 @@ class UserController extends Controller
             if ($request->file('avatar')) {
                 Storage::delete($avatar);
                 $avatar = $request->file('avatar')->store('public/images');
+                $avatar = Storage::url($avatar);
             }
 
             $user = $user->update([
