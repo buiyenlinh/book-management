@@ -28,5 +28,10 @@ class RoleSeeder extends Seeder
         $role3->name = "Editor";
         $role3->level = 3;
         $role3->save();
+
+        $role4 = new Role();    
+        $role4->name = "User";
+        $role4->level = 4;
+        $role4->save();
     }
 }
