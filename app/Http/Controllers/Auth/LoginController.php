@@ -22,6 +22,8 @@ class LoginController extends Controller
             ])) {
                 $user = Auth::user();
                 $data['token'] = 'M' . $user->id . Str::random(80);
+                User::where('id', $user->id)
+                    ->update(['token' => $data['token']]);
 
                 return $this->responseSuccess($data, 'Đăng nhập thành công');
             } else {
