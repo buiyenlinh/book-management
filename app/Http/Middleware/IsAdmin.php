@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 
-class IsSuperAdmin
+class IsAdmin
 {
     /**
      * Handle an incoming request.
@@ -24,7 +24,7 @@ class IsSuperAdmin
             $check = Role::where('id', $user->role_id)->first()->level;
         }
         
-        if ($check != 1) {
+        if ($check > 2) {
             return response()->json([
                 'success' => false,
                 'message' => 'You do not have access'

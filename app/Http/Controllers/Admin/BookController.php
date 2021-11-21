@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Models\Category;
 use App\Http\InitData;
 
 class BookController extends Controller
@@ -45,8 +46,16 @@ class BookController extends Controller
         try {
             $user = User::where('token', $request->bearerToken())->first();
 
+            $category = Category::where('id', $request->category_id)->get()->first();
+            if (!$category) {
+                return $this->responseError('Thể loại truyện này không tồn tại!');
+            }
+
             $cover_image = $request->file('cover_image')->store('public/images');
+            $cover_image = Storage::url($cover_image);
             $mp3 = $request->file('mp3')->store('public/mp3');
+            $mp3 = Storage::url($mp3);
+
             $book = Book::create([
                 'title' => $request->title,
                 'describe' => $request->describe,
@@ -83,17 +92,7 @@ class BookController extends Controller
             return $this->responseError([$ex->getMessage()], 'Something went wrong');
         }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
@@ -102,10 +101,6 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-
-    }
 
     public function updateBook(Request $request, $id) {
 
@@ -147,12 +142,13 @@ class BookController extends Controller
         if ($request->file('cover_image')) {
             Storage::delete($cover_image);
             $cover_image = $request->file('cover_image')->store('public/images');
-            
+            $cover_image = Storage::url($cover_image);
         }
 
         if ($request->file('mp3')) {
             Storage::delete($mp3);
             $mp3 = $request->file('mp3')->store('public/mp3');
+            $mp3 = Storage::url($mp3);
         }
 
         Book::where('id', $id)
@@ -183,6 +179,14 @@ class BookController extends Controller
     public function destroy($id)
     {
         $book = Book::where('id', $id);
+        if ($book->cover_image) {
+            Storage::delete($book->cover_image);
+        }
+            
+        if ($book->mp3) {
+            Storage::delete($book->mp3);
+        }
+
         $book->delete();
         return $this->responseSuccess([], 'Successfully deleted');
     }
