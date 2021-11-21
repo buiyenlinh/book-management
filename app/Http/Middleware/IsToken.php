@@ -30,7 +30,8 @@ class IsToken
 
         if ($check == 0) {
             return response()->json([
-                'message' => 'You did not login',
+                'message' => 'Bạn chưa đăng nhập',
+                'success' => false
             ]);
         }
 
