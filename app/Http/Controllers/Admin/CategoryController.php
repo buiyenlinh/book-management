@@ -23,7 +23,7 @@ class CategoryController extends Controller
     public function index()
     {
         $category = Category::paginate(5);
-        return $this->responseSuccess($category, 'Categories list');
+        return $this->responseSuccess($category, 'Danh sách loại truyện');
     }
 
     /**
@@ -50,10 +50,12 @@ class CategoryController extends Controller
             'username' => $user->username
         ]);
 
-        return response()->json([
-            'status' => 'OK',
-            'category' => $category
-        ]);
+        // return response()->json([
+        //     'status' => 'OK',
+        //     'category' => $category
+        // ]);
+
+        return $this->responseSuccess($category, 'Thêm loại truyện thành công');
     }
 
     /**
