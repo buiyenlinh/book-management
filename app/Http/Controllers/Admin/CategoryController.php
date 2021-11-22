@@ -112,7 +112,7 @@ class CategoryController extends Controller
             ->get()
             ->first();
 
-        return $this->responseSuccess($category, 'Successfully updated');
+        return $this->responseSuccess($category, 'Cập nhật loại truyện thành công');
     }
 
     /**
@@ -125,6 +125,6 @@ class CategoryController extends Controller
     {
         $category = Category::where('id', $id);
         $category->delete();
-        return $this->responseSuccess([], 'Successfully deleted');
+        return $this->responseSuccess([], 'Xóa loại truyện thành công');
     }
 }
