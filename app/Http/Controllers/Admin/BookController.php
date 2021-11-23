@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
 use Illuminate\Support\Facades\Storage;
 
+use App\Http\Resources\BookCollection;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Category;
@@ -21,8 +22,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::paginate(5);
-        return $this->responseSuccess($books, 'Books list');
+        $books = new BookCollection(Book::paginate(5));
+        return $this->responseSuccess($books->response()->getData(true), 'Books list');
     }
 
     /**
