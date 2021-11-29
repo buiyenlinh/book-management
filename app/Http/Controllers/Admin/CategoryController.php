@@ -128,4 +128,8 @@ class CategoryController extends Controller
         $category->delete();
         return $this->responseSuccess([], 'Xóa loại truyện thành công');
     }
+
+    public function getall() {
+        return Category::all();
+    }
 }
