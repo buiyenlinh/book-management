@@ -30,6 +30,7 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
         Route::post('login', [LoginController::class, 'login'])->withoutMiddleware('is-token');
     });
 
+    Route::get('category/all', [CategoryController::class, 'getall']);
     Route::resource('category', CategoryController::class);
     Route::resource('book', BookController::class);
     Route::post('book/update/{id}', [BookController::class, 'updateBook']);

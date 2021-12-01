@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\RoleResource;
 
+use App\Models\Role;
+
 class UserResource extends JsonResource
 {
     /**
@@ -24,8 +26,8 @@ class UserResource extends JsonResource
             'gender' => $this->gender,
             'address' => $this->address,
             'avatar' => $this->avatar,
-            'role' => new RoleResource($this->role()->first()), // role () là function được defined trong Model User
-            // 'role' => new RoleResource(Role::find($this->role_id)) // Sử dụng này cũng được, nhưng phải khai báo thêm Model Role
+            // 'role' => new RoleResource($this->role()->first()), // role () là function được defined trong Model User
+            'role' => new RoleResource(Role::find($this->role_id)), // Sử dụng này cũng được, nhưng phải khai báo thêm Model Role
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

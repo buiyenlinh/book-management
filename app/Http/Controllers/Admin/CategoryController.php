@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\CategoryCollection;
 
 class CategoryController extends Controller
 {
@@ -22,8 +23,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = Category::paginate(5);
-        return $this->responseSuccess($category, 'Danh sách loại truyện');
+        $category = new CategoryCollection(Category::paginate(5));
+        return $this->responseSuccess($category->response()->getData(true), 'Danh sách loại truyện');
     }
 
     /**
@@ -126,5 +127,9 @@ class CategoryController extends Controller
         $category = Category::where('id', $id);
         $category->delete();
         return $this->responseSuccess([], 'Xóa loại truyện thành công');
+    }
+
+    public function getall() {
+        return Category::all();
     }
 }
