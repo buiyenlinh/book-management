@@ -53,11 +53,11 @@ class BookController extends Controller
             }
 
             if(!$request->file('cover_image')) {
-                return $this->responseError('Vui lòng chọn ảnh bìa', 200);
+                return $this->responseError('Vui lòng chọn ảnh bìa');
             }
 
             if(!$request->file('mp3')) {
-                return $this->responseError('Vui lòng chọn mp3', 200);
+                return $this->responseError('Vui lòng chọn mp3');
             }
 
             $cover_image = $request->file('cover_image')->store('public/images');
