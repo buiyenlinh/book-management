@@ -52,6 +52,14 @@ class BookController extends Controller
                 return $this->responseError('Thể loại sách này không tồn tại!');
             }
 
+            if(!$request->file('cover_image')) {
+                return $this->responseError('Vui lòng chọn ảnh bìa', 200);
+            }
+
+            if(!$request->file('mp3')) {
+                return $this->responseError('Vui lòng chọn mp3', 200);
+            }
+
             $cover_image = $request->file('cover_image')->store('public/images');
             $cover_image = Storage::url($cover_image);
             $mp3 = $request->file('mp3')->store('public/mp3');
