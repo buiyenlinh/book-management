@@ -23,7 +23,7 @@ class BookController extends Controller
     public function index()
     {
         $books = new BookCollection(Book::paginate(5));
-        return $this->responseSuccess($books->response()->getData(true), 'Books list');
+        return $this->responseSuccess($books->response()->getData(true), 'Danh sách');
     }
 
     /**
@@ -49,13 +49,21 @@ class BookController extends Controller
 
             $category = Category::where('id', $request->category_id)->get()->first();
             if (!$category) {
-                return $this->responseError('Thể loại truyện này không tồn tại!');
+                return $this->responseError('Thể loại sách này không tồn tại!');
             }
 
             $cover_image = $request->file('cover_image')->store('public/images');
             $cover_image = Storage::url($cover_image);
             $mp3 = $request->file('mp3')->store('public/mp3');
             $mp3 = Storage::url($mp3);
+
+            $checkExist = Book::where('id', '!=', $id)
+                ->where('title', $request->title)
+                ->get()->toArray();
+        
+            if (count($checkExist) > 0) {
+                return $this->responseError('Tiêu đề này đã tồn tại', '', 200);
+            }
 
             $book = Book::create([
                 'title' => $request->title,
@@ -72,9 +80,9 @@ class BookController extends Controller
                 'username' => $user->username
             ]);
 
-            return $this->responseSuccess($book, 'ok');
+            return $this->responseSuccess($book, 'Thêm sách thành công!');
         } catch (\Exception $ex) {
-            return $this->responseSuccess([$ex->getMessage()], 'Something went wrong');
+            return $this->responseSuccess([$ex->getMessage()], 'Đã xảy ra lỗi! Vui lòng thử lại!');
         }
     }
 
@@ -90,7 +98,7 @@ class BookController extends Controller
             $book = Book::where('id', $id)->get()->first();
             return $this->responseSuccess($book);
         } catch (\Exception $ex) {
-            return $this->responseError([$ex->getMessage()], 'Something went wrong');
+            return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
         }
     }
     
@@ -168,7 +176,7 @@ class BookController extends Controller
             ]);
 
         $book = Book::where('id', $id)->get()->first();
-        return $this->responseSuccess($book, 'Successfully updated');
+        return $this->responseSuccess($book, 'Cập nhật sách thành công');
     }
 
     /**
@@ -189,6 +197,6 @@ class BookController extends Controller
         }
 
         $book->delete();
-        return $this->responseSuccess([], 'Successfully deleted');
+        return $this->responseSuccess([], 'Xóa sách thành công');
     }
 }
