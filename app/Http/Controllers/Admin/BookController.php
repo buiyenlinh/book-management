@@ -57,14 +57,6 @@ class BookController extends Controller
             $mp3 = $request->file('mp3')->store('public/mp3');
             $mp3 = Storage::url($mp3);
 
-            $checkExist = Book::where('id', '!=', $id)
-                ->where('title', $request->title)
-                ->get()->toArray();
-        
-            if (count($checkExist) > 0) {
-                return $this->responseError('Tiêu đề này đã tồn tại', '', 200);
-            }
-
             $book = Book::create([
                 'title' => $request->title,
                 'describe' => $request->describe,
