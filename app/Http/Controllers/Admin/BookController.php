@@ -187,7 +187,7 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        $book = Book::where('id', $id);
+        $book = Book::find($id);
         if ($book->cover_image) {
             Storage::delete($book->cover_image);
         }
