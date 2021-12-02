@@ -126,7 +126,6 @@ class BookController extends Controller
                 'describe' => 'required',
                 'language' => 'required',
                 'page_total' => 'required',
-                'cover_image' => 'required',
                 'producer' => 'required',
                 'author' => 'required',
                 'category_id' => 'required',
@@ -136,17 +135,24 @@ class BookController extends Controller
                 'title.required' => 'Tiêu đề là bắt buộc',
                 'describe.required' => 'Mô tả là bắt buộc',
                 'language.required' => 'Ngôn ngữ là bắt buộc',
-                'page_total.required' => 'Tổng số trang là bắt buộc',
-                'cover_image.required' => 'Ảnh bìa là bắt buộc',
+                'page_total.required' => 'Tổng số trang là bắt buộc',  
                 'author.required' => 'Tác giả là bắt buộc',
                 'category_id.required' => 'Loại truyện là bắt buộc',
                 'status.required' => 'Trạng thái là bắt buộc'
             ]
         );
 
-        $book = Book::where('id', $id)->get()->first();
-        $cover_image = $book->cover_image;
-        $mp3 = $book->mp3;
+        $book = Book::find($id);
+        if (!$book) {
+            return $this->responseError('Sách này không tồn tại');
+        }
+
+        if ($book->cover_image) {
+            $cover_image = $book->cover_image;
+        }
+        if ($book->mp3) {
+            $mp3 = $book->mp3;
+        }
         
         if ($request->file('cover_image')) {
             Storage::delete($cover_image);
