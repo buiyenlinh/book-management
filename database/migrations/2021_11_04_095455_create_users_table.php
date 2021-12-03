@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->boolean('active');
             $table->enum('gender', ['N', 'F', 'M'])->default('N');
-            $table->integer('birthday')->default(0);
+            $table->timestamp('birthday');
             $table->string('address')->default('');
             $table->string('avatar')->default('');
             $table->foreignId('role_id')->constrained('roles')->unsigned ();
