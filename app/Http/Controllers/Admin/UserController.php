@@ -51,9 +51,8 @@ class UserController extends Controller
         if ($request->role_id == 1) {
             return $this->responseError('Người dùng không được chọn quyền này', '', 422);
         }
-            
-        $time = explode('-', $request->birthday);
-        $birthday = mktime(0, 0, 0, $time[1], $time[2], $time[0]);
+        
+        $birthday = $request->birthday;
 
         $user = new UserResource(User::create([
             'fullname' => $request->fullname,
@@ -121,8 +120,7 @@ class UserController extends Controller
         }
 
         if ($userLoginId <= 2 && $userLoginId < $user->role->level) {
-            $time = explode('-', $request->birthday);
-            $birthday = mktime(0, 0, 0, $time[1], $time[2], $time[0]);
+            $birthday = $request->birthday;
             $avatar = $user->avatar;
             if ($request->file('avatar')) {
                 Storage::delete($avatar);
