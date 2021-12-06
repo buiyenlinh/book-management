@@ -103,7 +103,6 @@ class ProfileController extends Controller
 
         $user = $user->update([
             'fullname' => $request->fullname,
-            'active' => $request->active,
             'gender' => $request->gender,
             'avatar' => $avatar,
             'birthday' => $birthday,
@@ -124,6 +123,10 @@ class ProfileController extends Controller
     public function deleteAvatar(Request $request)
     {
         $user = User::where('token', $request->bearerToken())->get()->first();
+
+        if ($user->avatar) {
+            Storage::delete($user->avatar);
+        }
         $user = $user->update([
             'avatar' => ''
         ]);
