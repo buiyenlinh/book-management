@@ -93,8 +93,7 @@ class ProfileController extends Controller
 
         $user = User::where('token', $request->bearerToken())->get()->first();
 
-        $time = explode('-', $request->birthday);
-        $birthday = mktime(0, 0, 0, $time[1], $time[2], $time[0]);
+        $birthday = $request->birthday;
         $avatar = $user->avatar;
         if ($request->file('avatar')) {
             Storage::delete($avatar);
