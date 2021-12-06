@@ -79,14 +79,12 @@ class ProfileController extends Controller
         $request->validate(
             [
                 'fullname' => 'required',
-                'active' => 'required',
                 'gender' => 'required',
                 'address' => 'required',
                 'birthday' => 'required'
             ],
             [
                 'fullname.required' => 'Họ và tên là bắt buộc',
-                'active.required' => 'Trạng thái là bắt buộc',
                 'gender.required' => 'Giới tính là bắt buộc',
                 'address.required' => 'Địa chỉ là bắt buộc',
                 'birthday.required' => 'Ngày sinh là bắt buộc'
