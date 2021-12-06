@@ -132,6 +132,6 @@ class ProfileController extends Controller
         ]);
 
         $user = new UserResource(User::find($user));
-        return $this->responseSuccess($user, 'Cập nhật thành công');
+        return $this->responseSuccess($user, 'Xóa ảnh đại diện thành công');
     }
 }
