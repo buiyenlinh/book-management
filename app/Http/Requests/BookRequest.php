@@ -25,15 +25,11 @@ class BookRequest extends FormRequest
     {
         return [
             'title' => ['required', 'unique:books'],
-            'describe' => 'required',
             'language' => 'required',
-            'page_total' => 'required',
-            'cover_image' => 'required',
-            'producer' => 'required',
-            'author' => 'required',
+            'author_id' => 'required',
             'category_id' => 'required',
             'status' => 'required',
-            'username' => 'required'
+            'release_time' => 'required'
         ];
     }
 
@@ -47,14 +43,11 @@ class BookRequest extends FormRequest
         return [
             'title.required' => 'Tiêu đề là bắt buộc',
             'title.unique' => 'Tiêu đề này đã tồn tại',
-            'describe.required' => 'Mô tả là bắt buộc',
             'language.required' => 'Ngôn ngữ là bắt buộc',
-            'page_total.required' => 'Tổng số trang là bắt buộc',
-            'cover_image.required' => 'Ảnh bìa là bắt buộc',
-            'author.required' => 'Tác giả là bắt buộc',
+            'author_id.required' => 'Tác giả là bắt buộc',
+            'release_time.required' => 'Thời gian phát hành là bắt buộc',
             'category_id.required' => 'Loại truyện là bắt buộc',
-            'status.required' => 'Trạng thái là bắt buộc',
-            'username.required' => 'Tên đăng nhập là bắt buộc',
+            'status.required' => 'Trạng thái là bắt buộc'
         ];
     }
 }
