@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
+use App\Http\Requests\BookRequestUpdate;
 use Illuminate\Support\Facades\Storage;
 
 use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Category;
@@ -71,13 +73,22 @@ class BookController extends Controller
                 $cover_image = Storage::url($cover_image);
             }
 
+            $describe = '';
+            $producer = '';
+            if ($request->describe != 'undefined') {
+                $describe = $request->describe;
+            }
+            if ($request->producer != 'undefined') {
+                $producer = $request->producer;
+            }
+
             $book = Book::create([
                 'title' => $request->title,
-                'describe' => $request->describe,
+                'describe' => $describe,
                 'language' => $request->language,
                 'release_time' => $request->release_time,
                 'cover_image' => $cover_image,
-                'producer' => $request->producer,
+                'producer' => $producer,
                 'mp3' => $mp3,
                 'author_id' => $request->author_id,
                 'category_id' => $request->category_id,
@@ -85,19 +96,24 @@ class BookController extends Controller
                 'username' => $user->username
             ]);
 
-            foreach($request->content as $item) {
-                $content = Content::create([
-                    'title' => $item['title_content'],
-                    'content' => $item['content'],
-                    'book_id' => $book->id,
-                    'status' => 1,
-                    'username' => $user->username
-                ]);
+            if ($request->content) {
+                foreach(json_decode ($request->content) as $item) {
+                    if ($item) {
+                        $content = Content::create([
+                            'title' => $item->title_content,
+                            'content' => $item->content,
+                            'book_id' => $book->id,
+                            'status' => 1,
+                            'username' => $user->username
+                        ]);
+                    }
+                }
             }
+            
             
             return $this->responseSuccess($book, 'Thêm sách thành công!');
         } catch (\Exception $ex) {
-            return $this->responseSuccess([$ex->getMessage()], 'Đã xảy ra lỗi! Vui lòng thử lại!');
+            return $this->responseError([$ex->getMessage()], 'Đã xảy ra lỗi! Vui lòng thử lại!');
         }
     }
 
@@ -126,89 +142,77 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function updateBook(BookRequest $request, $id) {
+    public function updateBook(BookRequestUpdate $request, $id) {
+        try {
+            $user = User::where('token', $request->bearerToken())->first();
+            $book = Book::find($id);
+            if (!$book) {
+                return $this->responseError('Sách này không tồn tại');
+            }
 
-        // $book_check = Book::where('id', '!=', $id)
-        //     ->where('title', $request->title)
-        //     ->get();
-        
-        // if (count($book_check) > 0) {
-        //     return $this->responseError('Tiêu đề này đã tồn tại', '', 200);
-        // }
+            $mp3 = '';
+            $cover_image = '';
+            if ($book->cover_image) {
+                $cover_image = $book->cover_image;
+            }
+            if ($book->mp3) {
+                $mp3 = $book->mp3;
+            }
+            
+            if ($request->file('cover_image')) {
+                Storage::delete($cover_image);
+                $cover_image = $request->file('cover_image')->store('public/images');
+                $cover_image = Storage::url($cover_image);
+            }
 
-        // $request->validate([
-        //         'title' => 'required',
-        //         'describe' => 'required',
-        //         'language' => 'required',
-        //         'page_total' => 'required',
-        //         'producer' => 'required',
-        //         'author' => 'required',
-        //         'category_id' => 'required',
-        //         'status' => 'required'
-        //     ],
-        //     [
-        //         'title.required' => 'Tiêu đề là bắt buộc',
-        //         'describe.required' => 'Mô tả là bắt buộc',
-        //         'language.required' => 'Ngôn ngữ là bắt buộc',
-        //         'page_total.required' => 'Tổng số trang là bắt buộc',  
-        //         'author.required' => 'Tác giả là bắt buộc',
-        //         'category_id.required' => 'Loại truyện là bắt buộc',
-        //         'status.required' => 'Trạng thái là bắt buộc'
-        //     ]
-        // );
+            if ($request->file('mp3')) {
+                Storage::delete($mp3);
+                $mp3 = $request->file('mp3')->store('public/mp3');
+                $mp3 = Storage::url($mp3);
+            }
 
-        $book = Book::find($id);
-        if (!$book) {
-            return $this->responseError('Sách này không tồn tại');
-        }
-
-        $mp3 = '';
-        $cover_image = '';
-        if ($book->cover_image) {
-            $cover_image = $book->cover_image;
-        }
-        if ($book->mp3) {
-            $mp3 = $book->mp3;
-        }
-        
-        if ($request->file('cover_image')) {
-            Storage::delete($cover_image);
-            $cover_image = $request->file('cover_image')->store('public/images');
-            $cover_image = Storage::url($cover_image);
-        }
-
-        if ($request->file('mp3')) {
-            Storage::delete($mp3);
-            $mp3 = $request->file('mp3')->store('public/mp3');
-            $mp3 = Storage::url($mp3);
-        }
-
-        Book::where('id', $id)
-            ->update([
-                'title' => $request->title,
-                'describe' => $request->describe,
-                'language' => $request->language,
-                'release_time' => $request->release_time,
-                'cover_image' => $cover_image,
-                'producer' => $request->producer,
-                'author_id' => $request->author_id,
-                'mp3' => $mp3,
-                'category_id' => $request->category_id,
-                'status' => $request->status,
-            ]);
-
-        foreach($request->content as $item) {
-            Content::where('title_content', $item['title_content'])
-                ->where('book_id', $id)
+            Book::where('id', $id)
                 ->update([
-                    'title' => $item['title_content'],
-                    'content' => $item['content'],
-                    'status' => 1
+                    'title' => $request->title,
+                    'describe' => $request->describe,
+                    'language' => $request->language,
+                    'release_time' => $request->release_time,
+                    'cover_image' => $cover_image,
+                    'producer' => $request->producer,
+                    'author_id' => $request->author_id,
+                    'mp3' => $mp3,
+                    'category_id' => $request->category_id,
+                    'status' => $request->status,
                 ]);
-        }
 
-        $book = new BookResource(Book::find($id));
-        return $this->responseSuccess($book, 'Cập nhật sách thành công');
+            if ($request->content) {
+                foreach(json_decode ($request->content) as $item) {
+                    if ($item) {
+                        if ($item->id != null) {
+                            Content::find($item->id)
+                                ->update(
+                                    ['title' => $item->title, 
+                                    'content' => $item->content]
+                                );
+                        } else {
+                            $content = Content::create([
+                                'title' => $item->title,
+                                'content' => $item->content,
+                                'book_id' => $id,
+                                'status' => 1,
+                                'username' => $user->username
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            $book = new BookResource(Book::find($id));
+            return $this->responseSuccess($book, 'Cập nhật sách thành công');
+        } catch (\Exception $ex) {
+            return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
+        }
+        
     }
 
     /**
