@@ -26,7 +26,7 @@ class BookResource extends JsonResource
             'describe' => $this->describe,
             'language' => $this->language,
             'cover_image' => $this->cover_image,
-            'release_year' => $this->release_year,
+            'release_time' => $this->release_time,
             'producer' => $this->producer,
             'author' => new AuthorResource(Author::find($this->author_id)),
             'content' => new ContentCollection(Content::where('book_id', $this->id)->get()),
