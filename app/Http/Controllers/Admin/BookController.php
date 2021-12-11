@@ -237,4 +237,14 @@ class BookController extends Controller
         $book->delete();
         return $this->responseSuccess([], 'Xóa sách thành công');
     }
+
+    /**
+     * Search book
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function searchBook(Request $request) {
+        return $request;
+    }
 }
