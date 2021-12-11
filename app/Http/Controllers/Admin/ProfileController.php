@@ -79,14 +79,12 @@ class ProfileController extends Controller
         $request->validate(
             [
                 'fullname' => 'required',
-                'active' => 'required',
                 'gender' => 'required',
                 'address' => 'required',
                 'birthday' => 'required'
             ],
             [
                 'fullname.required' => 'Họ và tên là bắt buộc',
-                'active.required' => 'Trạng thái là bắt buộc',
                 'gender.required' => 'Giới tính là bắt buộc',
                 'address.required' => 'Địa chỉ là bắt buộc',
                 'birthday.required' => 'Ngày sinh là bắt buộc'
@@ -95,8 +93,7 @@ class ProfileController extends Controller
 
         $user = User::where('token', $request->bearerToken())->get()->first();
 
-        $time = explode('-', $request->birthday);
-        $birthday = mktime(0, 0, 0, $time[1], $time[2], $time[0]);
+        $birthday = $request->birthday;
         $avatar = $user->avatar;
         if ($request->file('avatar')) {
             Storage::delete($avatar);
@@ -106,7 +103,6 @@ class ProfileController extends Controller
 
         $user = $user->update([
             'fullname' => $request->fullname,
-            'active' => $request->active,
             'gender' => $request->gender,
             'avatar' => $avatar,
             'birthday' => $birthday,
@@ -127,11 +123,15 @@ class ProfileController extends Controller
     public function deleteAvatar(Request $request)
     {
         $user = User::where('token', $request->bearerToken())->get()->first();
+
+        if ($user->avatar) {
+            Storage::delete($user->avatar);
+        }
         $user = $user->update([
             'avatar' => ''
         ]);
 
         $user = new UserResource(User::find($user));
-        return $this->responseSuccess($user, 'Cập nhật thành công');
+        return $this->responseSuccess($user, 'Xóa ảnh đại diện thành công');
     }
 }

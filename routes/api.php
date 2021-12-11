@@ -4,10 +4,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\AuthorController;
 
 
 /*
@@ -28,6 +30,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->middleware('is-token')->group(function() {
     Route::prefix("auth")->group(function() {
         Route::post('login', [LoginController::class, 'login'])->withoutMiddleware('is-token');
+
+        Route::post('logout', [LogoutController::class, 'logout']);
     });
 
     Route::get('category/all', [CategoryController::class, 'getall']);
@@ -35,6 +39,8 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
 
     Route::post('book/update/{id}', [BookController::class, 'updateBook']);
     Route::resource('book', BookController::class);
+
+    Route::resource('author', AuthorController::class);
 
     Route::post('user/update/{id}', [UserController::class, 'updateUser'])->middleware('is-admin');
     Route::resource('user', UserController::class)->middleware('is-admin');

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\InitData;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryCollection;
@@ -24,7 +25,7 @@ class CategoryController extends Controller
     public function index()
     {
         $category = new CategoryCollection(Category::paginate(5));
-        return $this->responseSuccess($category->response()->getData(true), 'Danh sách loại truyện');
+        return $this->responseSuccess($category->response()->getData(true), 'Danh sách loại sách');
     }
 
     /**
@@ -56,7 +57,7 @@ class CategoryController extends Controller
         //     'category' => $category
         // ]);
 
-        return $this->responseSuccess($category, 'Thêm loại truyện thành công');
+        return $this->responseSuccess($category, 'Thêm loại sách thành công');
     }
 
     /**
@@ -98,12 +99,12 @@ class CategoryController extends Controller
             ->toArray();
 
         if (count($category_check) > 0) {
-            return $this->responseError('Tên loại truyện này đã tồn tại', '', 200);
+            return $this->responseError('Tên loại sách này đã tồn tại', '', 200);
         }
 
         $request->validate(
             [ 'name' => 'required' ],
-            [ 'name.required' => 'Tên loại truyện là bắt buộc' ]
+            [ 'name.required' => 'Tên loại sách là bắt buộc' ]
         );
 
         Category::where('id', $id)
@@ -113,7 +114,7 @@ class CategoryController extends Controller
             ->get()
             ->first();
 
-        return $this->responseSuccess($category, 'Cập nhật loại truyện thành công');
+        return $this->responseSuccess($category, 'Cập nhật loại sách thành công');
     }
 
     /**
@@ -124,9 +125,19 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::where('id', $id);
+        $category = Category::where('id', $id)->get();
+        
+        if ($category[0]['id']) {
+            $book = Book::where('category_id', $id)->get();
+            if ($book[0]) {
+                return $this->responseError('Loại sách này có sách không được xóa.');
+            }
+        } else {
+            return $this->responseError('Loại sách không tồn tại');
+        }
+
         $category->delete();
-        return $this->responseSuccess([], 'Xóa loại truyện thành công');
+        return $this->responseSuccess([], 'Xóa loại sách thành công');
     }
 
     public function getall() {

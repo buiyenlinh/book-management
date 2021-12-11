@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'active' => $this->active,
             'gender' => $this->gender,
+            'birthday' => $this->birthday,
             'address' => $this->address,
             'avatar' => $this->avatar,
             // 'role' => new RoleResource($this->role()->first()), // role () là function được defined trong Model User
