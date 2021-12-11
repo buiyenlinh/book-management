@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\AuthorController;
 
 
 /*
@@ -38,6 +39,8 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
 
     Route::post('book/update/{id}', [BookController::class, 'updateBook']);
     Route::resource('book', BookController::class);
+
+    Route::resource('author', AuthorController::class);
 
     Route::post('user/update/{id}', [UserController::class, 'updateUser'])->middleware('is-admin');
     Route::resource('user', UserController::class)->middleware('is-admin');
