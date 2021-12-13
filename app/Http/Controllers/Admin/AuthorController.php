@@ -22,8 +22,23 @@ class AuthorController extends Controller
     public function index()
     {
         try {
+            $author = new AuthorCollection(Author::paginate(5));
+            return $this->responseSuccess($author->response()->getData(true), 'Danh sách tác giả');
+        } catch (\Exception $ex) {
+           return $this->responseError([$ex->getMessage()], 'Đã xảy ra lỗi! Vui lòng thử lại!');
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllList()
+    {
+        try {
             $author = new AuthorCollection(Author::all());
-            return $this->responseSuccess($author, 'Danh sách tác giả');
+            return $this->responseSuccess($author->response()->getData(true), 'Danh sách tất cả tác giả');
         } catch (\Exception $ex) {
            return $this->responseError([$ex->getMessage()], 'Đã xảy ra lỗi! Vui lòng thử lại!');
         }
