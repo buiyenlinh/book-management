@@ -42,6 +42,7 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
     Route::resource('book', BookController::class);
 
     Route::get('author/all', [AuthorController::class, 'getAllList']);
+    Route::get('author/search', [AuthorController::class, 'search']);
     Route::resource('author', AuthorController::class);
 
     Route::post('user/update/{id}', [UserController::class, 'updateUser'])->middleware('is-admin');

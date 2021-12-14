@@ -152,4 +152,25 @@ class AuthorController extends Controller
             return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
         }
     }
+
+    /**
+     * search author
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request) {
+        try {
+            $authors = Author::query();
+            if ($request->has('fullname')) {
+                $authors = $authors->where('fullname', 'LIKE', '%' . $request->fullname . '%');
+            }
+
+            $authors = new AuthorCollection($authors->get());
+            return $this->responseSuccess($authors->response()->getData(true), 'Danh sách tìm kiếm');
+        } catch (\Exception $ex) {
+            return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
+        }
+    }
+
 }
