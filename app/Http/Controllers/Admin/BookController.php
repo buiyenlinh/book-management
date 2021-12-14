@@ -237,4 +237,34 @@ class BookController extends Controller
         $book->delete();
         return $this->responseSuccess([], 'Xóa sách thành công');
     }
+
+    /**
+     * Search book
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function searchBook(Request $request) {
+        try {
+            $where = '';
+            $books = Book::query();
+            if ($request->has('title')) {
+                $books = $books->where('title', 'LIKE', '%' . $request->title . '%');
+            }
+
+            if ($request->has('author_id')) {
+
+                $books = $books->where('author_id', $request->author_id);
+            }
+
+            if ($request->has('category_id')) {
+                $books = $books->where('category_id', $request->category_id);
+            }
+
+            $books = new BookCollection($books->get());
+            return $this->responseSuccess($books->response()->getData(true), 'Danh sách tìm kiếm');
+        } catch (\Exception $ex) {
+            return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
+        }
+    }
 }
