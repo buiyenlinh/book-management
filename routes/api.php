@@ -34,7 +34,7 @@ Route::prefix('v1')->middleware('is-token')->group(function() {
         Route::post('logout', [LogoutController::class, 'logout']);
     });
 
-    Route::get('category/all', [CategoryController::class, 'getall']);
+    Route::get('category/search', [CategoryController::class, 'search']);
     Route::resource('category', CategoryController::class);
 
     Route::post('book/update/{id}', [BookController::class, 'updateBook']);

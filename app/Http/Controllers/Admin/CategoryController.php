@@ -140,7 +140,21 @@ class CategoryController extends Controller
         return $this->responseSuccess([], 'Xóa loại sách thành công');
     }
 
-    public function getall() {
-        return Category::all();
+    public function search(Request $request) {
+        try {
+            $where = '';
+            $categories = Category::query();
+            if ($request->has('name')) {
+                $categories = $categories->where('name', 'LIKE', '%' . $request->name . '%');
+            }
+
+            $categories = new CategoryCollection($categories->get());
+            return $this->responseSuccess($categories->response()->getData(true), 'Danh sách tìm kiếm');
+        } catch (\Exception $ex) {
+            return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
+        }
     }
+
+
+
 }
