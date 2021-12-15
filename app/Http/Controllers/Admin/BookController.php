@@ -100,7 +100,7 @@ class BookController extends Controller
                 foreach(json_decode ($request->content) as $item) {
                     if ($item) {
                         $content = Content::create([
-                            'title' => $item->title_content,
+                            'title' => $item->title,
                             'content' => $item->content,
                             'book_id' => $book->id,
                             'status' => 1,
@@ -261,7 +261,7 @@ class BookController extends Controller
                 $books = $books->where('category_id', $request->category_id);
             }
 
-            $books = new BookCollection($books->get());
+            $books = new BookCollection($books->paginate(5)->withQueryString());
             return $this->responseSuccess($books->response()->getData(true), 'Danh sách tìm kiếm');
         } catch (\Exception $ex) {
             return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
