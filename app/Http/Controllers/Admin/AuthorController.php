@@ -166,7 +166,7 @@ class AuthorController extends Controller
                 $authors = $authors->where('fullname', 'LIKE', '%' . $request->fullname . '%');
             }
 
-            $authors = new AuthorCollection($authors->get());
+            $authors = new AuthorCollection($authors->paginate(5)->withQueryString());
             return $this->responseSuccess($authors->response()->getData(true), 'Danh sách tìm kiếm');
         } catch (\Exception $ex) {
             return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
