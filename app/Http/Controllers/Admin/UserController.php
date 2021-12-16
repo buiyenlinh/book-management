@@ -170,4 +170,33 @@ class UserController extends Controller
             return $this->responseError(['role' => 'Không có quyền xóa người dùng này'], '', 422);
         }
     }
+
+    /**
+     * Search user
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function searchUser(Request $request) {
+        try {
+            $where = '';
+            $users = User::query();
+            if ($request->has('fullname')) {
+                $users = $users->where('fullname', 'LIKE', '%' . $request->fullname . '%');
+            }
+
+            if ($request->has('role_id')) {
+                $users = $users->where('role_id', $request->role_id);
+            }
+            
+            if ($request->has('gender')) {
+                $users = $users->where('gender', $request->gender);
+            }
+
+            $users = new UserCollection($users->paginate(5)->withQueryString());
+            return $this->responseSuccess($users->response()->getData(true), 'Danh sách tìm kiếm');
+        } catch (\Exception $ex) {
+            return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
+        }
+    }
 }
