@@ -125,17 +125,15 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::where('id', $id)->get();
-        
-        if ($category[0]['id']) {
+        $category = Category::find($id); 
+        if ($category->id) {   
             $book = Book::where('category_id', $id)->get();
-            if ($book[0]) {
+            if (count($book) > 0) {
                 return $this->responseError('Loại sách này có sách không được xóa.');
             }
         } else {
             return $this->responseError('Loại sách không tồn tại');
         }
-
         $category->delete();
         return $this->responseSuccess([], 'Xóa loại sách thành công');
     }
@@ -148,7 +146,7 @@ class CategoryController extends Controller
                 $categories = $categories->where('name', 'LIKE', '%' . $request->name . '%');
             }
 
-            $categories = new CategoryCollection($categories->get());
+            $categories = new CategoryCollection($categories->paginate(5)->withQueryString());
             return $this->responseSuccess($categories->response()->getData(true), 'Danh sách tìm kiếm');
         } catch (\Exception $ex) {
             return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
