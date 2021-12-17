@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\AuthorController;
+use App\Http\Controllers\User\InfoController;
 
 
 /*
@@ -23,8 +24,14 @@ use App\Http\Controllers\Admin\AuthorController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::prefix('v1')->group(function() {
+    Route::get('home-user/category', [InfoController::class, 'getCategory']);
+    Route::get('home-user/book-in-category', [InfoController::class, 'getBookByCategory']);
+    Route::get('home-user/book', [InfoController::class, 'getBook']);
 });
 
 Route::prefix('v1')->middleware('is-token')->group(function() {
