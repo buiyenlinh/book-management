@@ -30,8 +30,11 @@ use App\Http\Controllers\User\InfoController;
 
 Route::prefix('v1')->group(function() {
     Route::get('home-user/category', [InfoController::class, 'getCategory']);
-    Route::get('home-user/book-in-category', [InfoController::class, 'getBookByCategory']);
+    Route::post('home-user/book-in-category', [InfoController::class, 'getBookByCategory']);
     Route::get('home-user/book', [InfoController::class, 'getBook']);
+    Route::get('home-user/new-list', [InfoController::class, 'getNewBookList']);
+    Route::post('home-user/similar-book', [InfoController::class, 'getSimilarBook']);
+    Route::get('home-user/book/{id}', [InfoController::class, 'getInfoBook']);
 });
 
 Route::prefix('v1')->middleware('is-token')->group(function() {
