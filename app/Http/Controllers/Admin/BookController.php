@@ -82,8 +82,36 @@ class BookController extends Controller
                 $producer = $request->producer;
             }
 
+            $title = $request->title;
+            $alias = $this->to_slug($request->alias);
+            // Check title
+            $countTitle = count(Book::where('title', $request->title)->get());
+
+            $i = 1;
+            while ($countTitle > 0) {
+                $countTitle = count(Book::where('title', $request->title . ' 0' . $i)->get());
+                $i++;
+            }
+            if ($i > 1) {
+                $i = $i - 1;
+            }
+            $title = $request->title . ' 0' . $i;
+
+            // Check alias
+            $countAlias = count(Book::where('alias', $alias)->get());
+            $i = 1;
+            while ($countAlias > 0) {
+                $countAlias = count(Book::where('alias', $alias . '-0' . $i)->get());
+                $i++;
+            }
+            if ($i > 1) {
+                $i = $i - 1;
+            }
+            $alias = $alias . '-0' . $i;    
+
+
             $book = Book::create([
-                'title' => $request->title,
+                'title' => $title,
                 'describe' => $describe,
                 'language' => $request->language,
                 'release_time' => $request->release_time,
@@ -93,7 +121,8 @@ class BookController extends Controller
                 'author_id' => $request->author_id,
                 'category_id' => $request->category_id,
                 'status' => $request->status,
-                'username' => $user->username
+                'username' => $user->username,
+                'alias' => $alias
             ]);
 
             if ($request->content) {
@@ -146,9 +175,41 @@ class BookController extends Controller
         try {
             $user = User::where('token', $request->bearerToken())->first();
             $book = Book::find($id);
+            $title = $request->title;
+            $alias = $this->to_slug($request->alias);
+
             if (!$book) {
                 return $this->responseError('Sách này không tồn tại');
             }
+            
+            // Check title
+            $countTitle = count(Book::where('title', $request->title)
+                ->where('id', '!=', $id)->get());
+            $i = 1;
+            while ($countTitle > 0) {
+                $countTitle = count(Book::where('title', $request->title . ' 0' . $i)
+                ->where('id', '!=', $id)->get());
+                $i++;
+            }
+            if ($i > 1) {
+                $i = $i - 1;
+            }
+            $title = $request->title . ' 0' . $i;
+            
+            // Check alias
+            $countAlias = count(Book::where('alias', $alias)
+                ->where('id', '!=', $id)->get());
+            $i = 1;
+            while ($countAlias > 0) {
+                $countAlias = count(Book::where('alias', $alias . '-0' . $i)
+                ->where('id', '!=', $id)->get());
+                $i++;
+            }
+            if ($i > 1) {
+                $i = $i - 1;
+            }
+            $alias = $alias . '-0' . $i;
+
 
             $mp3 = '';
             $cover_image = '';
@@ -173,7 +234,7 @@ class BookController extends Controller
 
             Book::where('id', $id)
                 ->update([
-                    'title' => $request->title,
+                    'title' => $title,
                     'describe' => $request->describe,
                     'language' => $request->language,
                     'release_time' => $request->release_time,
@@ -183,6 +244,7 @@ class BookController extends Controller
                     'mp3' => $mp3,
                     'category_id' => $request->category_id,
                     'status' => $request->status,
+                    'alias' => $alias
                 ]);
 
             if ($request->content) {
