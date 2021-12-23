@@ -63,14 +63,16 @@ class AuthorController extends Controller
     public function store(AuthorRequest $request)
     {
         try {
+            $alias = $this->to_slug($request->fullname);
             $author = Author::create([
                 'fullname' => $request->fullname,
-                'introduce' => $request->introduce
+                'introduce' => $request->introduce,
+                'alias' => $alias
             ]);
 
             return $this->responseSuccess($author, 'Thêm tác giả thành công!');
         } catch (\Exception $ex) {
-            return $this->reponseError([$ex->getMessage()], 'Đã xảy ra lỗi! Vui lòng thử lại!');
+            return $this->responseError([$ex->getMessage()], 'Đã xảy ra lỗi! Vui lòng thử lại!');
         }
         
     }
@@ -112,17 +114,25 @@ class AuthorController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $checkAuthor = count(Author::where('fullname', $request->fullname)
+                ->where('id', '!=', $id)->get());
+            if ($checkAuthor > 0) {
+                return $this->responseError('Họ tên tác giả này đã tồn tại');
+            }
+
             if ($request->fullname) {
                 $author = Author::find($id)
                 ->update([
                     'fullname' => $request->fullname,
-                    'introduce' => $request->introduce
+                    'introduce' => $request->introduce,
+                    'alias' => $this->to_slug($request->fullname)
                 ]);
                 $author = new AuthorResource(Author::find($id));
                 return $this->responseSuccess($author, 'Cập nhật tác giả thành công!');
             } else {
                 return $this->responseError('Họ tên tác giả là bắt buộc');
             }
+            
         } catch (\Exception $ex) {
             return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
         }

@@ -17,6 +17,7 @@ class CreateAuthorsTable extends Migration
             $table->id();
             $table->string('fullname');
             $table->text('introduce')->nullable();
+            $table->string('alias')->unique();
             $table->timestamps();
         });
     }
