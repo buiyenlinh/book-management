@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\InitData;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Author;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\CategoryCollection;
+use App\Http\Resources\AUthorCollection;
 use App\Http\Resources\BookResource;
 
 class InfoController extends Controller
@@ -89,6 +91,36 @@ class InfoController extends Controller
         try {
             $book = new BookResource(Book::find($request->id));
             return $this->responseSuccess($book, 'Thông tin sách');
+        } catch (\Exception $ex) {
+            return $this->responseError('Vui lòng thử lại', [$ex->getMessage()]);
+        }
+    }
+
+    /**
+     * Lấy danh sách tác giả
+     */
+    public function getAuthor() {
+        try {
+            $author = new AuthorCollection(Author::paginate(5));
+            return $this->responseSuccess($author->response()->getData(true), 'Danh sách tác giả');
+        } catch (\Exception $ex) {
+            return $this->responseError('Vui lòng thử lại', [$ex->getMessage()]);
+        }
+    }
+
+    /**
+     * Lấy danh sách sách theo tác giả
+     */
+    public function getBookByAuthor(Request $request) {
+        try {
+            $author_id = $request->author_id;
+            if ($author_id < 0 || $author_id == null || $author_id == "") {
+                return $this->responseError('Vui lòng thử lại');
+            }
+
+            $books = new BookCollection(Book::where('author_id', $author_id)->get());
+            
+            return $this->responseSuccess($books, 'Danh sách sách theo tác giả');
         } catch (\Exception $ex) {
             return $this->responseError('Vui lòng thử lại', [$ex->getMessage()]);
         }

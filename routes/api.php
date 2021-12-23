@@ -35,8 +35,10 @@ Route::prefix('v1')->group(function() {
     Route::get('home-user/new-list', [InfoController::class, 'getNewBookList']);
     Route::post('home-user/similar-book', [InfoController::class, 'getSimilarBook']);
     Route::get('home-user/book/{id}', [InfoController::class, 'getInfoBook']);
+    Route::get('home-user/author', [InfoController::class, 'getAuthor']);
+    Route::post('home-user/book-in-author', [InfoController::class, 'getBookByAuthor']);
 });
-
+    
 Route::prefix('v1')->middleware('is-token')->group(function() {
     Route::prefix("auth")->group(function() {
         Route::post('login', [LoginController::class, 'login'])->withoutMiddleware('is-token');
