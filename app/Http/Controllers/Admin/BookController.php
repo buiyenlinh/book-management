@@ -84,6 +84,7 @@ class BookController extends Controller
 
             $title = $request->title;
             $alias = $this->to_slug($request->alias);
+
             // Check title
             $countTitle = count(Book::where('title', $request->title)->get());
 
@@ -93,9 +94,9 @@ class BookController extends Controller
                 $i++;
             }
             if ($i > 1) {
-                $i = $i - 1;
+                $title = $request->title . ' 0' . ($i - 1);
             }
-            $title = $request->title . ' 0' . $i;
+            
 
             // Check alias
             $countAlias = count(Book::where('alias', $alias)->get());
@@ -105,9 +106,9 @@ class BookController extends Controller
                 $i++;
             }
             if ($i > 1) {
-                $i = $i - 1;
-            }
-            $alias = $alias . '-0' . $i;    
+                $alias = $alias . '-0' . ($i - 1); 
+            } else
+              
 
 
             $book = Book::create([
@@ -192,9 +193,8 @@ class BookController extends Controller
                 $i++;
             }
             if ($i > 1) {
-                $i = $i - 1;
+                $title = $request->title . ' 0' . ($i - 1);
             }
-            $title = $request->title . ' 0' . $i;
             
             // Check alias
             $countAlias = count(Book::where('alias', $alias)
@@ -206,10 +206,8 @@ class BookController extends Controller
                 $i++;
             }
             if ($i > 1) {
-                $i = $i - 1;
+                $alias = $alias . '-0' . ($i - 1);
             }
-            $alias = $alias . '-0' . $i;
-
 
             $mp3 = '';
             $cover_image = '';
