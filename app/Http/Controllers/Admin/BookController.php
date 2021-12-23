@@ -107,9 +107,7 @@ class BookController extends Controller
             }
             if ($i > 1) {
                 $alias = $alias . '-0' . ($i - 1); 
-            } else
-              
-
+            }
 
             $book = Book::create([
                 'title' => $title,
@@ -126,7 +124,7 @@ class BookController extends Controller
                 'alias' => $alias
             ]);
 
-            if ($request->content) {
+            if ($request->content && $book->id) {
                 foreach(json_decode ($request->content) as $item) {
                     if ($item) {
                         $content = Content::create([
@@ -138,6 +136,8 @@ class BookController extends Controller
                         ]);
                     }
                 }
+            } else {
+                return $this->responseError('Đã xảy ra lỗi! Vui lòng thử lại!');
             }
             
             
