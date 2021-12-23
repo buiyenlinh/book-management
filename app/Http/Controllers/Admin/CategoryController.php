@@ -47,7 +47,9 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $user = User::where('token', $request->bearerToken())->first();
-
+        
+        $name = $request->name;
+        $alias = $this->to_slug($request->alias);
         // Check name
         $countCategory = count(Category::where('name', $request->name)->get());
         $i = 1;
@@ -56,13 +58,11 @@ class CategoryController extends Controller
             $i = $i + 1;
         }
         if ($i > 1) {
-            $i = $i - 1;
+            $name = $request->name . ' 0' . ($i - 1);
         }
-        $name = $request->name . ' 0' . $i;
 
         // check alias
 
-        $alias = $this->to_slug($request->alias);
         $countAlias = count(Category::where('alias', $alias)->get());
         $i = 1;
         while ($countAlias > 0) {
@@ -70,9 +70,8 @@ class CategoryController extends Controller
             $i = $i + 1;
         }
         if ($i > 1) {
-            $i = $i - 1;
+            $alias = $alias . '-0' . ($i - 1);
         }
-        $alias = $alias . '-0' . $i;
 
         $category = Category::create([
             'name' => $name,
@@ -120,6 +119,8 @@ class CategoryController extends Controller
             [ 'name.required' => 'Tên loại sách là bắt buộc', 'alias.required' => 'Đường dẫn là bắt buộc' ] 
         );
 
+        $name = $request->name;
+        $alias = $request->alias;
         // Check name
         $countCategory = count(Category::where('name', $request->name)
             ->where('id', '!=', $id)->get());
@@ -131,9 +132,8 @@ class CategoryController extends Controller
         }
     
         if ($i > 1) {
-            $i = $i - 1;
+            $name = $request->name . ' 0' . ($i - 1);
         }
-        $name = $request->name . ' 0' . $i;
 
         // check alias
         $alias = $this->to_slug($request->alias);
@@ -146,18 +146,15 @@ class CategoryController extends Controller
             $i = $i + 1;
         }
         if ($i > 1) {
-            $i = $i - 1;
+            $alias = $alias . '-0' . ($i - 1);
         }
-        $alias = $alias . '-0' . $i;
-        return $alias;
 
-        Category::where('id', $id)
-            ->update([
-                'name' => $request->name,
+        Category::find($id)->update([
+                'name' => $name,
                 'alias' => $alias
             ]);
 
-        $category = Category::where('id', $id)
+        $category = Category::find($id)
             ->get()
             ->first();
 
