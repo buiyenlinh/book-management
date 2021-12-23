@@ -62,7 +62,6 @@ class CategoryController extends Controller
         }
 
         // check alias
-
         $countAlias = count(Category::where('alias', $alias)->get());
         $i = 1;
         while ($countAlias > 0) {
