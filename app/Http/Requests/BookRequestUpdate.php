@@ -29,7 +29,8 @@ class BookRequestUpdate extends FormRequest
             'author_id' => 'required',
             'category_id' => 'required',
             'status' => 'required',
-            'release_time' => 'required'
+            'release_time' => 'required',
+            'alias' => 'required'
         ];
     }
 
@@ -46,7 +47,8 @@ class BookRequestUpdate extends FormRequest
             'author_id.required' => 'Tác giả là bắt buộc',
             'release_time.required' => 'Thời gian phát hành là bắt buộc',
             'category_id.required' => 'Loại truyện là bắt buộc',
-            'status.required' => 'Trạng thái là bắt buộc'
+            'status.required' => 'Trạng thái là bắt buộc',
+            'alias.required' => 'Đường dẫn là bắt buộc'
         ];
     }
 }
