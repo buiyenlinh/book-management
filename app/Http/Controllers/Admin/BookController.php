@@ -132,7 +132,8 @@ class BookController extends Controller
                             'content' => $item->content,
                             'book_id' => $book->id,
                             'status' => 1,
-                            'username' => $user->username
+                            'username' => $user->username,
+                            'alias' => $item->alias
                         ]);
                     }
                 }
@@ -252,7 +253,8 @@ class BookController extends Controller
                             Content::find($item->id)
                                 ->update(
                                     ['title' => $item->title, 
-                                    'content' => $item->content]
+                                    'content' => $item->content,
+                                    'alias' => $item->alias]
                                 );
                         } else {
                             $content = Content::create([
@@ -260,7 +262,8 @@ class BookController extends Controller
                                 'content' => $item->content,
                                 'book_id' => $id,
                                 'status' => 1,
-                                'username' => $user->username
+                                'username' => $user->username,
+                                'alias' => $item->alias
                             ]);
                         }
                     }
