@@ -23,6 +23,7 @@ class CreateContentsTable extends Migration
                 ->onDelete('cascade');
             $table->boolean('status');
             $table->string('username');
+            $table->string('alias');
             $table->timestamps();
         });
     }

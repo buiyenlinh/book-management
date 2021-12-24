@@ -104,7 +104,8 @@ class BookController extends Controller
                             'content' => $item->content,
                             'book_id' => $book->id,
                             'status' => 1,
-                            'username' => $user->username
+                            'username' => $user->username,
+                            'alias' => $item->alias
                         ]);
                     }
                 }
@@ -190,16 +191,18 @@ class BookController extends Controller
                     if ($item) {
                         if ($item->id != null) {
                             Content::find($item->id)
-                                ->update(
-                                    ['title' => $item->title, 
-                                    'content' => $item->content]
-                                );
+                                ->update([
+                                    'title' => $item->title, 
+                                    'content' => $item->content,
+                                    'alias' => $item->alias
+                                ]);
                         } else {
                             $content = Content::create([
                                 'title' => $item->title,
                                 'content' => $item->content,
                                 'book_id' => $id,
                                 'status' => 1,
+                                'alias' => $item->alias,
                                 'username' => $user->username
                             ]);
                         }
