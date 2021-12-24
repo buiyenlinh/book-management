@@ -119,8 +119,12 @@ class InfoController extends Controller
             }
             $author = Author::where('alias', $request->alias)->first();
             if ($author->id > 0) {
-                $books = new BookCollection(Book::where('author_id', $author->id)->get());
-                return $this->responseSuccess($books, 'Danh sách sách theo tác giả');
+                $books = new BookCollection(Book::where('author_id', $author->id)->paginate(5));
+                $response = [
+                    'books' => $books->response()->getData(true),
+                    'author' => $author
+                ];
+                return $this->responseSuccess($response, 'Danh sách sách theo tác giả');
             } else {
                 return $this->responseError('Không tồn tại loại sách này');
             }
