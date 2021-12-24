@@ -22,6 +22,7 @@ class CreateContentsTable extends Migration
                 ->unsigned()
                 ->onDelete('cascade');
             $table->boolean('status');
+            $table->string('alias')->unique();
             $table->string('username');
             $table->timestamps();
         });
