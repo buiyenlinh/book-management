@@ -51,11 +51,11 @@ class InfoController extends Controller
      */
     public function getBookByCategory(Request $request) {
         try {
-            $category = Category::find($request->category_id);
-            if ($category) {
-                $books = Book::where('category_id', $request->category_id);
+            $category = Category::where('alias', $request->alias)->get();
+            if (count($category) > 0) {
+                $books = Book::where('category_id', $category[0]->id);
                 $books = new BookCollection($books->paginate(5)->withQueryString());
-                return $this->responseSuccess($books->response()->getData(true), 'Danh sách sách thuộc loại sách ' . $category->name);
+                return $this->responseSuccess($books->response()->getData(true), 'Danh sách sách thuộc loại sách ' . $category[0]->name);
             } else {
                 return $this->responseError('Loại sách không tồn tại');
             }
@@ -73,8 +73,8 @@ class InfoController extends Controller
             if ($request->has('set_number')) {
                 $set_number = $request->set_number;
             }
-            $book = Book::find($request->id);
-            $similar_book = Book::where('category_id', $book->category_id)
+            $book = Book::where('alias', $request->alias)->get();
+            $similar_book = Book::where('category_id', $book[0]->category_id)
                 ->where('id', '!=', $request->id)
                 ->limit($set_number)->get();
 
@@ -89,7 +89,7 @@ class InfoController extends Controller
      */
     public function getInfoBook(Request $request) {
         try {
-            $book = new BookResource(Book::find($request->id));
+            $book = new BookResource(Book::where('alias', $request->alias)->first());
             return $this->responseSuccess($book, 'Thông tin sách');
         } catch (\Exception $ex) {
             return $this->responseError('Vui lòng thử lại', [$ex->getMessage()]);
@@ -113,14 +113,17 @@ class InfoController extends Controller
      */
     public function getBookByAuthor(Request $request) {
         try {
-            $author_id = $request->author_id;
-            if ($author_id < 0 || $author_id == null || $author_id == "") {
+            $alias = $request->alias;
+            if ($alias == "") {
                 return $this->responseError('Vui lòng thử lại');
             }
-
-            $books = new BookCollection(Book::where('author_id', $author_id)->get());
-            
-            return $this->responseSuccess($books, 'Danh sách sách theo tác giả');
+            $author = Author::where('alias', $request->alias)->first();
+            if ($author->id > 0) {
+                $books = new BookCollection(Book::where('author_id', $author->id)->get());
+                return $this->responseSuccess($books, 'Danh sách sách theo tác giả');
+            } else {
+                return $this->responseError('Không tồn tại loại sách này');
+            }
         } catch (\Exception $ex) {
             return $this->responseError('Vui lòng thử lại', [$ex->getMessage()]);
         }

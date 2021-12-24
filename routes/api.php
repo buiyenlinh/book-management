@@ -34,9 +34,9 @@ Route::prefix('v1')->group(function() {
     Route::get('home-user/book', [InfoController::class, 'getBook']);
     Route::get('home-user/new-list', [InfoController::class, 'getNewBookList']);
     Route::post('home-user/similar-book', [InfoController::class, 'getSimilarBook']);
-    Route::get('home-user/book/{id}', [InfoController::class, 'getInfoBook']);
+    Route::post('home-user/book/{alias}', [InfoController::class, 'getInfoBook']);
     Route::get('home-user/author', [InfoController::class, 'getAuthor']);
-    Route::post('home-user/book-in-author', [InfoController::class, 'getBookByAuthor']);
+    Route::post('home-user/book-in-author/{alias}', [InfoController::class, 'getBookByAuthor']);
 });
     
 Route::prefix('v1')->middleware('is-token')->group(function() {
