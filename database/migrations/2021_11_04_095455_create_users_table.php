@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('fullname');
             $table->string('username')->unique();
+            $table->string('email')->default('');
             $table->string('password');
             $table->boolean('active');
             $table->enum('gender', ['N', 'F', 'M'])->default('N');
@@ -24,7 +25,8 @@ class CreateUsersTable extends Migration
             $table->string('address')->default('');
             $table->string('avatar')->default('');
             $table->foreignId('role_id')->constrained('roles')->unsigned ();
-            $table->string('token')->nullable();
+            $table->string('token')->default('');
+            $table->string('oauth2')->default('');
             $table->timestamps();
         });
     }

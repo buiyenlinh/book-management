@@ -22,13 +22,15 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'fullname' => $this->fullname,
             'username' => $this->username,
+            'email' => $this->email,
             'active' => $this->active,
             'gender' => $this->gender,
             'birthday' => $this->birthday,
             'address' => $this->address,
             'avatar' => $this->avatar,
-            // 'role' => new RoleResource($this->role()->first()), // role () là function được defined trong Model User
+            // 'role' => new RoleResource($this->role()->first()), // role () là function được khai báo trong Model User
             'role' => new RoleResource(Role::find($this->role_id)), // Sử dụng này cũng được, nhưng phải khai báo thêm Model Role
+            'oauth2' => $this->oauth2,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
