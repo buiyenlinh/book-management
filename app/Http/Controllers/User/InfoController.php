@@ -8,9 +8,11 @@ use App\Http\InitData;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Author;
+use App\Models\Content;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\AUthorCollection;
+use App\Http\Resources\ContentCollection;
 use App\Http\Resources\BookResource;
 
 class InfoController extends Controller
@@ -135,5 +137,27 @@ class InfoController extends Controller
         } catch (\Exception $ex) {
             return $this->responseError('Vui lòng thử lại', [$ex->getMessage()]);
         }
+    }
+
+    /**
+     * Lấy chương / phần nội dung của sách
+     */
+    public function getContentChapter(Request $request) {
+        $book = Book::where('alias', $request->book)->get();
+        if (count($book) > 0) {
+            $chapter_list = new ContentCollection(Content::where('book_id', $book[0]->id)->get());
+            $content = Content::where('book_id', $book[0]->id)
+            ->where('alias', $request->alias_content)
+            ->first();
+            $response = [
+                'content' => $content,
+                'book' => $book[0],
+                'chapter_list' => $chapter_list
+            ];
+            return $this->responseSuccess($response, 'Nội dung');
+        } else {
+            return $this->responseSuccess([], 'Nội dung');
+        }
+        return $content;
     }
 }

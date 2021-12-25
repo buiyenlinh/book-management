@@ -24,6 +24,7 @@ class CreateContentsTable extends Migration
             $table->boolean('status');
             $table->string('alias')->unique();
             $table->string('username');
+            $table->string('alias');
             $table->timestamps();
         });
     }
