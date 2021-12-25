@@ -34,6 +34,7 @@ class BookResource extends JsonResource
             'category' => new CategoryResource(Category::find($this->category_id)),
             'status' => $this->status,
             'username' => $this->username,
+            'alias' => $this->alias,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

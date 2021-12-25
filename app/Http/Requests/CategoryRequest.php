@@ -24,7 +24,8 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'unique:categories'],
+            'name' => 'required',
+            'alias' => 'required'
         ];
     }
 
@@ -37,7 +38,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên loại truyện là bắt buộc',
-            'name.unique' => 'Tên loại truyện đã tồn tại',
+            'alias.required' => 'Đường dẫn là bắt buộc'
         ];
     }
 }

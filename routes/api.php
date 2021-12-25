@@ -37,6 +37,7 @@ Route::prefix('v1')->group(function() {
     Route::post('home-user/book/{alias}', [InfoController::class, 'getInfoBook']);
     Route::get('home-user/author', [InfoController::class, 'getAuthor']);
     Route::post('home-user/book-in-author/{alias}', [InfoController::class, 'getBookByAuthor']);
+    Route::get('home-user/chapter', [InfoController::class, 'getContentChapter']);
 });
     
 Route::prefix('v1')->middleware('is-token')->group(function() {

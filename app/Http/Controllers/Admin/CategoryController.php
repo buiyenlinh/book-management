@@ -47,15 +47,36 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $user = User::where('token', $request->bearerToken())->first();
-        $category = Category::create([
-            'name' => $request->name,
-            'username' => $user->username
-        ]);
+        
+        $name = $request->name;
+        $alias = $this->to_slug($request->alias);
+        // Check name
+        $countCategory = count(Category::where('name', $request->name)->get());
+        $i = 1;
+        while ($countCategory > 0) {
+            $countCategory = count(Category::where('name', $request->name . ' 0' . $i)->get());
+            $i = $i + 1;
+        }
+        if ($i > 1) {
+            $name = $request->name . ' 0' . ($i - 1);
+        }
 
-        // return response()->json([
-        //     'status' => 'OK',
-        //     'category' => $category
-        // ]);
+        // check alias
+        $countAlias = count(Category::where('alias', $alias)->get());
+        $i = 1;
+        while ($countAlias > 0) {
+            $countAlias = count(Category::where('alias', $alias . '-0' . $i)->get());
+            $i = $i + 1;
+        }
+        if ($i > 1) {
+            $alias = $alias . '-0' . ($i - 1);
+        }
+
+        $category = Category::create([
+            'name' => $name,
+            'username' => $user->username,
+            'alias' => $alias
+        ]);
 
         return $this->responseSuccess($category, 'Thêm loại sách thành công');
     }
@@ -92,25 +113,47 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        $category_check = Category::where('id', '!=', $id)
-            ->where('name', $request->name)
-            ->get()
-            ->toArray();
-
-        if (count($category_check) > 0) {
-            return $this->responseError('Tên loại sách này đã tồn tại', '', 200);
-        }
-
         $request->validate(
-            [ 'name' => 'required' ],
-            [ 'name.required' => 'Tên loại sách là bắt buộc' ]
+            [ 'name' => 'required', 'alias' => 'required' ],
+            [ 'name.required' => 'Tên loại sách là bắt buộc', 'alias.required' => 'Đường dẫn là bắt buộc' ] 
         );
 
-        Category::where('id', $id)
-            ->update(['name' => $request->name]);
+        $name = $request->name;
+        $alias = $request->alias;
+        // Check name
+        $countCategory = count(Category::where('name', $request->name)
+            ->where('id', '!=', $id)->get());
+        $i = 1;
+        while ($countCategory > 0) {
+            $countCategory = count(Category::where('name', $request->name . ' 0' . $i)
+            ->where('id', '!=', $id)->get());
+            $i = $i + 1;
+        }
+    
+        if ($i > 1) {
+            $name = $request->name . ' 0' . ($i - 1);
+        }
 
-        $category = Category::where('id', $id)
+        // check alias
+        $alias = $this->to_slug($request->alias);
+        $countAlias = count(Category::where('alias', $alias)
+            ->where('id', '!=', $id)->get());
+        $i = 1;
+        while ($countAlias > 0) {
+            $countAlias = count(Category::where('alias', $alias . '-0' . $i)
+                ->where('id', '!=', $id)->get());
+            $i = $i + 1;
+        }
+        if ($i > 1) {
+            $alias = $alias . '-0' . ($i - 1);
+        }
+
+        Category::find($id)->update([
+                'name' => $name,
+                'alias' => $alias
+            ]);
+
+        $category = Category::find($id)
             ->get()
             ->first();
 

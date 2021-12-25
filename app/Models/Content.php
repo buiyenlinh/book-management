@@ -13,6 +13,7 @@ class Content extends Model
         'content',
         'book_id',
         'status',
-        'username'
+        'username',
+        'alias'
     ];
 }

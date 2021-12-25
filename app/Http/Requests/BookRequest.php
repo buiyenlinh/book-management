@@ -24,11 +24,12 @@ class BookRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required', 'unique:books'],
+            'title' => ['required'],
             'language' => 'required',
             'author_id' => 'required',
             'category_id' => 'required',
             'status' => 'required',
+            'alias' => ['required'],
             'release_time' => 'required'
         ];
     }
@@ -42,12 +43,14 @@ class BookRequest extends FormRequest
     {
         return [
             'title.required' => 'Tiêu đề là bắt buộc',
-            'title.unique' => 'Tiêu đề này đã tồn tại',
+            // 'title.unique' => 'Tiêu đề này đã tồn tại',
             'language.required' => 'Ngôn ngữ là bắt buộc',
             'author_id.required' => 'Tác giả là bắt buộc',
             'release_time.required' => 'Thời gian phát hành là bắt buộc',
             'category_id.required' => 'Loại truyện là bắt buộc',
-            'status.required' => 'Trạng thái là bắt buộc'
+            'status.required' => 'Trạng thái là bắt buộc',
+            'alias.required' => 'Đường dẫn là bắt buộc',
+            // 'alias.unique' => 'Đường dẫn này đã tồn tại'
         ];
     }
 }

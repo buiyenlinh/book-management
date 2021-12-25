@@ -19,7 +19,7 @@ class CreateBooksTable extends Migration
             $table->string('describe')->nullable();
             $table->string('language');
             $table->string('cover_image')->nullable();
-            $table->string('producer')->nullable();;
+            $table->string('producer')->nullable(); 
             $table->timestamp('release_time');
             $table->foreignId('author_id')
                 ->contranted('authors')
@@ -32,6 +32,7 @@ class CreateBooksTable extends Migration
                 ->onDelete('cascade');
             $table->boolean('status');
             $table->string('username');
+            $table->string('alias')->unique();
             $table->timestamps();
         });
     }
