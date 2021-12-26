@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\User\InfoController;
+use App\Http\Controllers\Auth\UserLoginController;
 
 
 /*
@@ -43,8 +44,10 @@ Route::prefix('v1')->group(function() {
 Route::prefix('v1')->middleware('is-token')->group(function() {
     Route::prefix("auth")->group(function() {
         Route::post('login', [LoginController::class, 'login'])->withoutMiddleware('is-token');
-
         Route::post('logout', [LogoutController::class, 'logout']);
+
+        Route::post('user/login', [UserLoginController::class, 'login'])->withoutMiddleware('is-token');
+        Route::post('login-with-google', [UserLoginController::class, 'loginWithGoogle'])->withoutMiddleware('is-token');
     });
 
     Route::get('category/search', [CategoryController::class, 'search']);
