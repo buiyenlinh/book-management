@@ -25,9 +25,9 @@ class UserLoginController extends Controller
                 'active' => $request->active
             ])) {
                 $user = Auth::user();
-                $data['token'] = 'M' . $user->id . Str::random(80);
+                $data['token_user'] = 'M' . $user->id . Str::random(80);
                 User::where('id', $user->id)
-                    ->update(['token' => $data['token']]);
+                    ->update(['token_user' => $data['token_user']]);
 
                 return $this->responseSuccess($data, 'Đăng nhập thành công');
             } else {
@@ -47,10 +47,10 @@ class UserLoginController extends Controller
             return $this->responseError('Vui lòng thử lại');
         }
 
-        $user_login = User::where('email', $request->email)->get();
-        $token = 'M1' . Str::random(80);
-        if (count($user_login) == 0) {
-            $user = new UserResource(User::create([
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user) {
+            $user = User::create([
                 'username' => $request->email,
                 'password' => bcrypt($request->fullname),
                 'fullname' => $request->fullname,
@@ -58,19 +58,18 @@ class UserLoginController extends Controller
                 'active' => 1,
                 'avatar' => $request->avatar,
                 'role_id' => 4,
-                'oauth2' => 'google|' . $request->oauth2,
-                'token' => $token
-            ]));
-            return $this->responseSuccess($user, 'Đăng nhập thành công');
-        } else {
-            if ($user_login[0]->oauth2 == '') {
-                $user_logined = $user_login[0]->update([
-                    'token' => $token,
-                    'oauth2' => 'google|' . $request->oauth2,
-                ]);
-            }
-            $user_logined = $user_login[0];
-            return $this->responseSuccess($user_logined, 'Đăng nhập thành công');
+                'oauth2' => '',
+                'token' => ''
+            ]);
         }
+
+        $token = 'U' . $user->id . Str::random(80);
+        
+        $user->update([
+            'token_user' => $token,
+            'oauth2' => 'google|' . $request->oauth2,
+        ]);
+        
+        return $this->responseSuccess($user, 'Đăng nhập thành công');
     }
 }

@@ -30,6 +30,8 @@ class User extends Authenticatable
         'address',
         'avatar',
         'role_id',
+        'token',
+        'token_user',
         'oauth2'
     ];
 
