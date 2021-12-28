@@ -19,6 +19,7 @@ class Book extends Model
         'mp3',
         'category_id',
         'status',
+        'free',
         'username',
         'alias'
     ];

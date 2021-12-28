@@ -29,10 +29,12 @@ class BookResource extends JsonResource
             'release_time' => $this->release_time,
             'producer' => $this->producer,
             'author' => new AuthorResource(Author::find($this->author_id)),
-            'content' => new ContentCollection(Content::where('book_id', $this->id)->get()),
+            'content' => new ContentCollection(Content::where('book_id', $this->id)
+                ->where('status', 1)->get()),
             'mp3' => $this->mp3,
             'category' => new CategoryResource(Category::find($this->category_id)),
             'status' => $this->status,
+            'free' => $this->free,
             'username' => $this->username,
             'alias' => $this->alias,
             'created_at' => $this->created_at,
