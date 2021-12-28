@@ -26,7 +26,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = new BookCollection(Book::paginate(5));
+        $books = new BookCollection(Book::where('status', 1)->paginate(5));
         return $this->responseSuccess($books->response()->getData(true), 'Danh sách');
     }
 
@@ -120,6 +120,7 @@ class BookController extends Controller
                 'author_id' => $request->author_id,
                 'category_id' => $request->category_id,
                 'status' => $request->status,
+                'free' => $request->free,
                 'username' => $user->username,
                 'alias' => $alias
             ]);
@@ -131,7 +132,7 @@ class BookController extends Controller
                             'title' => $item->title,
                             'content' => $item->content,
                             'book_id' => $book->id,
-                            'status' => 1,
+                            'status' => $request->status,
                             'username' => $user->username,
                             'alias' => $item->alias
                         ]);
@@ -157,7 +158,7 @@ class BookController extends Controller
     public function show($id)
     {
         try {
-            $book = new BookResource(Book::find($id));
+            $book = new BookResource(Book::where('id', $id)->where('status', 1)->first());
             return $this->responseSuccess($book);
         } catch (\Exception $ex) {
             return $this->responseError([$ex->getMessage()], 'Vui lòng thử lại!');
@@ -243,6 +244,7 @@ class BookController extends Controller
                     'mp3' => $mp3,
                     'category_id' => $request->category_id,
                     'status' => $request->status,
+                    'free' => $request->free,
                     'alias' => $alias
                 ]);
 
@@ -261,7 +263,7 @@ class BookController extends Controller
                                 'title' => $item->title,
                                 'content' => $item->content,
                                 'book_id' => $id,
-                                'status' => 1,
+                                'status' => $request->status,
                                 'username' => $user->username,
                                 'alias' => $item->alias
                             ]);
@@ -312,7 +314,7 @@ class BookController extends Controller
             $where = '';
             $books = Book::query();
             if ($request->has('title')) {
-                $books = $books->where('title', 'LIKE', '%' . $request->title . '%');
+                $books = $books->where('title', 'LIKE', '%' . $request->title . '%')->where('status', 1);
             }
 
             if ($request->has('author_id')) {
