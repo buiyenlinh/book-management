@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'is-administrator' => \App\Http\MiddleWare\IsAdministrator::class,
         'is-super-admin' => \App\Http\MiddleWare\IsSuperAdmin::class,
         'is-admin' => \App\Http\MiddleWare\IsAdmin::class,
+        'is-user' => \App\Http\MiddleWare\IsUser::class,
     ];
 }

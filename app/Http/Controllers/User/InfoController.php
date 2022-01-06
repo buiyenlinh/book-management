@@ -5,15 +5,18 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\InitData;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Author;
 use App\Models\Content;
+use App\Models\User;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\AUthorCollection;
 use App\Http\Resources\ContentCollection;
 use App\Http\Resources\BookResource;
+use App\Http\Resources\UserResource;
 
 class InfoController extends Controller
 {
@@ -159,5 +162,34 @@ class InfoController extends Controller
             return $this->responseSuccess([], 'Nội dung');
         }
         return $content;
+    }
+
+    /**
+     * Lấy thông tin user
+     */
+    public function getProfileUser(Request $request) {
+        $user = new UserResource(User::where('token_user', $request->bearerToken())->first());
+        return $this->responseSuccess($user, 'Thông tin cá nhân');  
+    }
+
+    /**
+     * Xóa ảnh đại diện user
+     */
+    public function deleteAvatarUser(Request $request) {
+        $user = User::where('token_user', $request->bearerToken())->get()->first();
+        if (!filter_var($user->avatar, FILTER_VALIDATE_URL)) { 
+            if ($user->avatar) {
+                Storage::delete($user->avatar);
+            }
+        }
+        
+        $user = $user->update([
+            'avatar' => ''
+        ]);
+
+        $user = User::where('token_user', $request->bearerToken())->get()->first();
+
+        $user = new UserResource(User::find($user->id));
+        return $this->responseSuccess($user, 'Xóa ảnh đại diện thành công');
     }
 }
