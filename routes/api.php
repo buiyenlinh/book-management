@@ -39,6 +39,8 @@ Route::prefix('v1')->group(function() {
     Route::get('home-user/author', [InfoController::class, 'getAuthor']);
     Route::post('home-user/book-in-author/{alias}', [InfoController::class, 'getBookByAuthor']);
     Route::get('home-user/chapter', [InfoController::class, 'getContentChapter']);
+    Route::get('home-user/profile', [InfoController::class, 'getProfileUser'])->middleware('is-user');
+    Route::delete('home-user/profile/delete-avatar', [InfoController::class, 'deleteAvatarUser'])->middleware('is-user');
 });
     
 Route::prefix('v1')->middleware('is-token')->group(function() {
