@@ -192,4 +192,55 @@ class InfoController extends Controller
         $user = new UserResource(User::find($user->id));
         return $this->responseSuccess($user, 'Xóa ảnh đại diện thành công');
     }
+
+    /**
+     * Cập nhật profile
+     */
+    public function updateProfileUser(Request $request)
+    {
+        $user = User::where('token_user', $request->bearerToken())->get()->first();
+        $avatar = $user->avatar;
+        if ($request->file('avatar')) {
+            Storage::delete($avatar);
+            $avatar = $request->file('avatar')->store('public/images');
+            $avatar = Storage::url($avatar);
+        }
+
+        $fullname = $user->fullname;
+        $gender = $user->gender;
+        $birthday = $user->birthday;
+        $address = $user->address;
+
+        if ($request->fullname) {
+            $fullname = $request->fullname;
+        }
+
+        if ($request->gender) {
+            $gender = $request->gender;
+        }
+
+        if ($request->gender) {
+            $gender = $request->gender;
+        }
+
+        if ($request->address) {
+            $address = $request->address;
+        }
+
+        if ($request->birthday) {
+            $birthday = $request->birthday;
+        }
+
+        $user->update([
+            'fullname' => $fullname,
+            'gender' => $gender,
+            'avatar' => $avatar,
+            'birthday' => $birthday,
+            'address' => $address
+        ]);
+
+        $user = new UserResource(User::find($user->id));
+
+        return $this->responseSuccess($user, 'Cập nhật thông tin thành công');
+    }
 }
